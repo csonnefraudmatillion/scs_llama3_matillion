@@ -79,7 +79,7 @@ docker push <ORGNAME>-<ACCTNAME>.registry.snowflakecomputing.com/LLAMA3/PUBLIC/I
 
 ### 4. Upload the Service Specification
 You can use Snowflake's UI to upload the llama3_8b_spec.yml to @LLAMA3.PUBLIC.CONTAINER_FILES.  
-<img src="assets/file_upload.png" width="70%" height="70%">
+<img src="/assets/spec_yml_upload.png" width="70%" height="70%">
 
 ### 5. Create the Llama 3 Service
 ```sql
@@ -133,6 +133,20 @@ Escape any values which would not be valid in a JSON string, such as newlines an
     {"name":"Andrew-3cb1d5d0d4bba0f246364cffb7981ab9cdd9c059","review":"No Review Text"}}')), 
     NULL) AS RESPONSE;
 ```
+
+### 8. Setup the SPCS AI Prompt component in DPC
+Once everything has been deployed in Snowflake, you can start setting up the SPCS AI Prompt component. 
+
+|Attribute      |Value                                                                            |
+|---------------|---------------------------------------------------------------------------------|
+|Database       |The database used for Llama3 deployment (e.g. `LLama3`)                          |
+|Schema         |The schema used for Llama3 deployment (e.g. `PUBLIC`)                            |
+|Service        |The name of the SPCS service running the LLM (e.g. `LLAMA3_8B_SERVICE`)          |
+|Endpoint name  |The name of the SPCS endpoint (e.g. `api`)                                       |
+|Endpoint path  |The endpoint path coming from the webservice definition (e.g. `matillion_prompt`)|
+|Metadata       |Key/Values to map to the LLM endpoint (only temperature has been mapped)         |
+
+<img src="/assets/matillion_dpc_spcs_ai_prompt.png" width="70%" height="70%">
 
 ## Demo Video
 https://www.loom.com/share/d1a853a4e3ef421c81cd6ea8fc35094c
