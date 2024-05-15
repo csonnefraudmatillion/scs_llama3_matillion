@@ -1,7 +1,7 @@
-# META's Llama 3 in Snowpark Container Services
-This repository explains how to run META's [Llama 3](https://llama.meta.com/llama3/) in Snowpark Container Services.  
-You can access the related blog article here:  
+# Meta's Llama 3 with Matillion AI Prompt component for Snowpark Container Services
+This repository explains how to run META's [Llama 3](https://llama.meta.com/llama3/) in Snowpark Container Services. You can access the related blog article here:  
 [Llama 3 in Snowflake](https://medium.com/@michaelgorkow/496863631700?source=friends_link&sk=c912452d8427d999f800777cc01f6d88)
+The setup of Matillion AI Prompt Component for Snowpark Container Services is documented at the end of the document, to integrate with Llama3 running inside of Snowflake.
 
 ## Requirements
 * Snowflake Account with Snowpark Container Services
@@ -67,12 +67,12 @@ GRANT ROLE LLAMA3_ROLE TO USER ADMIN; --add your username here
 
 ### 2. Clone this repository
 ```bash
-git clone https://github.com/michaelgorkow/scs_llama3.git
+git clone https://github.com/csonnefraudmatillion/scs_llama3_matillion.git
 ```
 
 ### 3. Build & Upload the container
 ```cmd
-cd scs_llama3
+cd scs_llama3_matillion
 docker build --platform linux/amd64 -t <ORGNAME>-<ACCTNAME>.registry.snowflakecomputing.com/LLAMA3/PUBLIC/IMAGE_REPOSITORY/llama3_service:latest .
 docker push <ORGNAME>-<ACCTNAME>.registry.snowflakecomputing.com/LLAMA3/PUBLIC/IMAGE_REPOSITORY/llama3_service:latest
 ```
