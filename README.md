@@ -107,12 +107,12 @@ SERVICE=LLAMA3.PUBLIC.LLAMA3_8B_SERVICE
 ENDPOINT=API
 AS '/complete';
 
--- Create service function for custom function
-CREATE OR REPLACE FUNCTION LLAMA3.PUBLIC.LLAMA3_8B_COMPLETE_CUSTOM(SYSTEM_PROMPT TEXT, INPUT_PROMPT TEXT, MAX_NEW_TOKENS INT, TEMPERATURE FLOAT, TOP_P FLOAT)
+-- Create service function for Matillion Prompt
+CREATE OR REPLACE FUNCTION LLAMA3.PUBLIC.LLAMA3_8B_MATILLION_PROMPT(SYSTEMPROMPT TEXT, USERPROMPT TEXT, INPUTPROMPT TEXT, INPUTVALUES VARIANT, METADATA VARIANT)
 RETURNS TEXT
 SERVICE=LLAMA3.PUBLIC.LLAMA3_8B_SERVICE
 ENDPOINT=API
-AS '/complete_custom';
+AS '/matillion_prompt';
 ```
 
 ### 7. Call the service functions
@@ -121,14 +121,19 @@ AS '/complete_custom';
 SELECT LLAMA3.PUBLIC.LLAMA3_8B_COMPLETE('Generate the next 3 numbers for this Fibonacci sequence: 0, 1, 1, 2') AS RESPONSE;
 
 -- Define system_prompt, max_token, temperature and top_p yourself:
-SELECT LLAMA3.PUBLIC.LLAMA3_8B_COMPLETE_CUSTOM(
-    'You are a coding assistant for Python. Only return Python code.', 
-    'Write Python code to generate the fibonacci sequence.', 
-    1024, 
-    0.6, 
-    0.9) AS RESONSE;
+-- Mock the call coming from the Matillion AI prompt components:
+-- SYSTEMPROMPT TEXT, USERPROMPT TEXT, INPUTPROMPT TEXT, INPUTVALUES VARIANT, METADATA VARIANT
+SELECT LLAMA3.PUBLIC.LLAMA3_8B_MATILLION_PROMPT(
+    'You are a data analysis and exploration tool. You receive a context prompt from the user, a data object, and an output format.
+Generate the output in a valid JSON format, including only the output variables without any headers or explanations.
+Escape any values which would not be valid in a JSON string, such as newlines and double quotes.', 
+    'You are a marketing analyst reviewing user comments from a well-known barista company.',
+    '"anger_reason":"Give a single word describing the reason why the user is angry. In the case of a positive review, keep the field blank. Remember, not two words, just ONE!","anger_score":"Give a score between 0 and 10 on the level of anger you feel in the user review. Only use integers.","sentiment":"Answer by POSITIVE, NEUTRAL or NEGATIVE based on the sentiment of the user comment. Make sure your answer is in capital letters.","wont_return":"Answer YES if the user indicates that they will never come again to the shop. Otherwise, answer NO","product_involved":"Extract the product name involved in the user comment. Keep the field blank if you cant find any.","anger_summary":"Give a humorous summary of the user comment, in a single sentence that could have been written by a barista. Remember to keep it really fun!","swear_words":"Answer YES if you found swear words in the user review. Otherwise, answer by NO"',
+    TO_VARIANT(PARSE_JSON('{"data object":
+    {"name":"Andrew-3cb1d5d0d4bba0f246364cffb7981ab9cdd9c059","review":"No Review Text"}}')), 
+    NULL) AS RESPONSE;
 ```
 
 ## Demo Video
-https://github.com/michaelgorkow/scs_llama3/assets/28981844/89a4422c-ba74-456b-b081-4f358bc2509f
+https://www.loom.com/share/d1a853a4e3ef421c81cd6ea8fc35094c
 

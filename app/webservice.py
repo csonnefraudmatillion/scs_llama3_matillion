@@ -66,16 +66,16 @@ async def complete(request: Request):
    return {"data": return_data}
    
    
-@app.post("/complete_custom", tags=["Endpoints"])
-async def complete_custom(request: Request):
-   # system_prompt, input_prompt, max_new_tokens, temperature, top_p
+@app.post("/matillion_prompt", tags=["Endpoints"])
+async def matillion_prompt(request: Request):
+      
    request_body = await request.json()
    request_body = request_body['data']
    return_data = []
-   for index, system_prompt, input_prompt, max_new_tokens, temperature, top_p  in request_body:
+   for index, systemPrompt, userPrompt, inputValues, metadata  in request_body:
       messages = [
-          {"role": "system", "content": f"{system_prompt}"},
-          {"role": "user", "content": f"{input_prompt}"},
+          {"role": "system", "content": f"{systemPrompt}"},
+          {"role": "user", "content": f"{userPrompt} data object: {inputValues}"},
       ]
       prompt = pipeline.tokenizer.apply_chat_template(
               messages, 
@@ -88,11 +88,11 @@ async def complete_custom(request: Request):
       ]
       outputs = pipeline(
           prompt,
-          max_new_tokens=max_new_tokens,
+          max_new_tokens=1500,
           eos_token_id=terminators,
           do_sample=True,
-          temperature=temperature,
-          top_p=top_p
+          temperature=metadata['temperature'],
+          top_p=1
       )
       response = outputs[0]["generated_text"][len(prompt):]
       return_data.append([index, response])
