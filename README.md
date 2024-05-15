@@ -137,6 +137,7 @@ Escape any values which would not be valid in a JSON string, such as newlines an
 
 ### 8. Setup the SPCS AI Prompt component in DPC
 Once everything has been deployed in Snowflake, you can start setting up the SPCS AI Prompt component. 
+A copy of the Barista demo with the SPCS AI Prompt component is here: [Barista demo - SPCS](/pipelines/Process%20with%20SPCS.orch.yaml)
 
 |Attribute      |Value                                                                            |
 |---------------|---------------------------------------------------------------------------------|

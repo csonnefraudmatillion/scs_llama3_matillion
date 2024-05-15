@@ -1,0 +1,100 @@
+type: "orchestration"
+version: "1.0"
+pipeline:
+  components:
+    Start:
+      type: "start"
+      transitions:
+        unconditional:
+        - "Truncate User Reviews Table"
+      parameters:
+        componentName: "Start"
+    Truncate User Reviews Table:
+      type: "truncate-table"
+      transitions:
+        unconditional:
+        - "Snowpark Container Prompt"
+      parameters:
+        componentName: "Truncate User Reviews Table"
+        warehouse: "[Environment Default]"
+        database: "[Environment Default]"
+        schema: "[Environment Default]"
+        targetTable:
+        - "BARISTA_REVIEWS_PROCESSED_SPCS"
+    Snowpark Container Prompt:
+      type: "spcs-ai-prompt"
+      parameters:
+        componentName: "Snowpark Container Prompt"
+        spcs:
+          database: "LLAMA3"
+          schema: "PUBLIC"
+          service: "LLAMA3_8B_SERVICE"
+          endpointName: "api"
+          endpointPath: "matillion_prompt"
+          metadata:
+          - - "key"
+            - "value"
+        source:
+          snowflake:
+            database: "DEV_TEAM"
+            schema: "PUBLIC"
+            table: "BARISTA_REVIEWS"
+            keyColumn: "name"
+            limit: "10"
+        promptContext:
+          userContext: "You're a marketing analyst reviewing user comments from a\
+            \ well-known barista company."
+          inputs:
+          - - "name"
+            - "name"
+          - - "review"
+            - "review"
+          outputFormat: "JSON"
+          outputs:
+          - - "anger_score"
+            - "Give a score between 0 and 10 on the level of anger you feel in the\
+              \ user's review"
+          - - "anger_reason"
+            - "Give a single word describing the reason why the user is angry. In\
+              \ the case of a positive review, keep the field blank. Remember, not\
+              \ two words, just ONE!"
+          - - "sentiment"
+            - "Answer by \"Positive\", \"Neutral\", \"Negative\" based on the sentiment\
+              \ of the user's comment."
+          - - "anger_summary"
+            - "Give a humorous summary of the user comment, in a single sentence that\
+              \ could have been written by a barista. Remember to keep it really fun!"
+          - - "swear_words"
+            - "Answer \"Yes\" if you found swear words in the user review. Otherwise,\
+              \ answer by \"No\""
+          - - "product_involved"
+            - "Extract the product name involved in the user comment. Keep the field\
+              \ blank if you can't find any."
+          - - "wont_return"
+            - "Answer \"Yes\" if the user indicates that they will never come again\
+              \ to the shop. Otherwise, answer \"No\". "
+        destination:
+          snowflake:
+            database: "DEV_TEAM"
+            schema: "PUBLIC"
+            table: "BARISTA_REVIEWS_PROCESSED_SPCS"
+            createTableOptions: "Replace if Table Exists"
+        ragConfig:
+          isRagEnabled: "No"
+design:
+  components:
+    Start:
+      position:
+        x: -960
+        "y": -90
+      tempMetlId: 1
+    Truncate User Reviews Table:
+      position:
+        x: -790
+        "y": -90
+      tempMetlId: 3
+    Snowpark Container Prompt:
+      position:
+        x: -630
+        "y": -90
+      tempMetlId: 5
