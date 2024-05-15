@@ -121,17 +121,27 @@ AS '/matillion_prompt';
 -- Chat with Llama 3 with default settings:
 SELECT LLAMA3.PUBLIC.LLAMA3_8B_COMPLETE('Generate the next 3 numbers for this Fibonacci sequence: 0, 1, 1, 2') AS RESPONSE;
 
--- Define system_prompt, max_token, temperature and top_p yourself:
--- Mock the call coming from the Matillion AI prompt components:
--- SYSTEMPROMPT TEXT, USERPROMPT TEXT, INPUTPROMPT TEXT, INPUTVALUES VARIANT, METADATA VARIANT
+-- Mock a call coming from the Matillion SPCS AI prompt component:
 SELECT LLAMA3.PUBLIC.LLAMA3_8B_MATILLION_PROMPT(
     'You are a data analysis and exploration tool. You receive a context prompt from the user, a data object, and an output format.
 Generate the output in a valid JSON format, including only the output variables without any headers or explanations.
 Escape any values which would not be valid in a JSON string, such as newlines and double quotes.', 
     'You are a marketing analyst reviewing user comments from a well-known barista company.',
-    '"anger_reason":"Give a single word describing the reason why the user is angry. In the case of a positive review, keep the field blank. Remember, not two words, just ONE!","anger_score":"Give a score between 0 and 10 on the level of anger you feel in the user review. Only use integers.","sentiment":"Answer by POSITIVE, NEUTRAL or NEGATIVE based on the sentiment of the user comment. Make sure your answer is in capital letters.","wont_return":"Answer YES if the user indicates that they will never come again to the shop. Otherwise, answer NO","product_involved":"Extract the product name involved in the user comment. Keep the field blank if you cant find any.","anger_summary":"Give a humorous summary of the user comment, in a single sentence that could have been written by a barista. Remember to keep it really fun!","swear_words":"Answer YES if you found swear words in the user review. Otherwise, answer by NO"',
-    TO_VARIANT(PARSE_JSON('{"data object":
-    {"name":"Andrew-3cb1d5d0d4bba0f246364cffb7981ab9cdd9c059","review":"No Review Text"}}')), 
+    TO_VARIANT(PARSE_JSON('{
+  "data object": {
+    "name": "Andrew-3cb1d5d0d4bba0f246364cffb7981ab9cdd9c059",
+    "review": "Our 15 years old daughter had a green matcha drink at the Baristar in Planet Hollywood Resort and Casino in Las Vegas and got sick after drinking it. She asked for her drink to be made with coconut milk since she is highly lactose intolerance. After finishing her drink she starts complaining from a terrible stomach ache, she threw up almost 17 times and went to the bathroom numerous times within 45 minutes. That drink was the only and 1st thing she had consumed that day. After the intensive episodes of throwing up she turned pale, her lips were blue and she was freezing cold shaking screaming from her abdominal pain. She said that it feels like a food poisoning episode or maybe they have put milk in her drink instead of the coconut milk. The music was so loud in the hotel that there is no way probably the and please will hear the order correctly. For something was wrong with the drink that she had food poisoning.",
+    "output_format": {
+      "anger_reason": "Give a single word describing the reason why the user is angry. In the case of a positive review, keep the field blank. Remember, not two words, just ONE!",
+      "anger_score": "Give a score between 0 and 10 on the level of anger you feel in the user review",
+      "sentiment": "Answer by POSITIVE, NEUTRAL, NEGATIVE based on the sentiment of the user comment.",
+      "wont_return": "Answer YES if the user indicates that they will never come again to the shop. Otherwise, answer NO. ",
+      "product_involved": "Extract the product name involved in the user comment. Keep the field blank if you cant find any.",
+      "anger_summary": "Give a humorous summary of the user comment, in a single sentence that could have been written by a barista. Remember to keep it really fun!",
+      "swear_words": "Answer YES if you found swear words in the user review. Otherwise, answer by NO"
+    }
+  }
+}')), 
     NULL) AS RESPONSE;
 ```
 
