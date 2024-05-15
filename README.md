@@ -1,6 +1,7 @@
 # Meta's Llama 3 with Matillion AI Prompt component for Snowpark Container Services
 This repository explains how to run META's [Llama 3](https://llama.meta.com/llama3/) in Snowpark Container Services. You can access the related blog article here:  
 [Llama 3 in Snowflake](https://medium.com/@michaelgorkow/496863631700?source=friends_link&sk=c912452d8427d999f800777cc01f6d88)
+
 The setup of Matillion AI Prompt Component for Snowpark Container Services is documented at the end of the document, to integrate with Llama3 running inside of Snowflake.
 
 ## Requirements
@@ -147,6 +148,14 @@ Once everything has been deployed in Snowflake, you can start setting up the SPC
 |Metadata       |Key/Values to map to the LLM endpoint (only temperature has been mapped)         |
 
 <img src="/assets/matillion_dpc_spcs_ai_prompt.png" width="70%" height="70%">
+
+### 9. Don't forget to suspend/stop the compute pool once you're done! 
+
+As part of the costs incurred by SPCS is the uptime of the compute pool. Don't forget to stop the compute pool if you're not using it anymore!
+
+````sql
+ALTER COMPUTE POOL LLAMA3_GPU_POOL STOP ALL;
+````
 
 ## Demo Video
 https://www.loom.com/share/d1a853a4e3ef421c81cd6ea8fc35094c
